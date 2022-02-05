@@ -86,6 +86,7 @@ typedef struct Monitor Monitor;
 typedef struct Client Client;
 struct Client {
 	char name[256];
+	char class[256];
 	float mina, maxa;
 	int x, y, w, h;
 	int oldx, oldy, oldw, oldh;
@@ -186,6 +187,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static Client *nametoclient(char *name);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static void propertynotify(XEvent *e);
@@ -228,6 +230,7 @@ static void updatenumlockmask(void);
 static void updatesizehints(Client *c);
 static void updatestatus(void);
 static void updatetitle(Client *c);
+static void updatetitleclass(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
@@ -724,11 +727,13 @@ drawbar(Monitor *m)
 	x = 0;
 	w = blw = TEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeNorm]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0); /* Layout Symbol*/
+	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0); /* Layout Symbol */
 
 	if ((w = m->ww - tw - x) > bh) {
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeTag : SchemeNorm]);
+			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->class, 0);
+            x += TEXTW(m->sel->class);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
 			if (m->sel->isfloating)
 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
@@ -1070,6 +1075,7 @@ manage(Window w, XWindowAttributes *wa)
 	c->oldbw = wa->border_width;
 
 	updatetitle(c);
+	updatetitleclass(c);
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
@@ -1230,6 +1236,19 @@ movemouse(const Arg *arg)
 }
 
 Client *
+nametoclient(char *name)
+{
+	Client *c;
+	Monitor *m;
+
+	for (m = mons; m; m = m->next)
+		for (c = m->clients; c; c = c->next)
+			if (strcmp(name, c->name))
+				return c;
+	return NULL;
+}
+
+Client *
 nexttiled(Client *c)
 {
 	for (; c && (c->isfloating || !ISVISIBLE(c)); c = c->next);
@@ -1277,6 +1296,11 @@ propertynotify(XEvent *e)
 			if (c == c->mon->sel)
 				drawbar(c->mon);
 		}
+		if (ev->atom == XA_WM_CLASS) {
+			updatetitleclass(c);
+			if (c == c->mon->sel)
+				drawbar(c->mon);
+		}
 		if (ev->atom == netatom[NetWMWindowType])
 			updatewindowtype(c);
 	}
@@ -1286,6 +1310,15 @@ void
 quit(const Arg *arg)
 {
 	running = 0;
+}
+
+void
+raiseorwake(const Arg *arg)
+{
+    if (nametoclient(((char **)arg->v)[0]))
+        fprintf(stdout, "%s exists.\n", ((char **)arg->v)[0]);
+    else
+        fprintf(stdout, "%s does not exist.\n", ((char **)arg->v)[0]);
 }
 
 Monitor *
@@ -2051,6 +2084,14 @@ updatetitle(Client *c)
 	if (!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name))
 		gettextprop(c->win, XA_WM_NAME, c->name, sizeof c->name);
 	if (c->name[0] == '\0') /* hack to mark broken clients */
+		strcpy(c->name, broken);
+}
+
+void
+updatetitleclass(Client *c)
+{
+    gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class);
+	if (c->class[0] == '\0') /* hack to mark broken clients */
 		strcpy(c->name, broken);
 }
 
