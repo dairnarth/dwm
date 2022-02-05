@@ -734,6 +734,7 @@ drawbar(Monitor *m)
 			drw_setscheme(drw, scheme[m == selmon ? SchemeTag : SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->class, 0);
             x += TEXTW(m->sel->class);
+			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
 			if (m->sel->isfloating)
 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
@@ -2090,9 +2091,10 @@ updatetitle(Client *c)
 void
 updatetitleclass(Client *c)
 {
-    gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class);
+    if (!gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class))
+        gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class);
 	if (c->class[0] == '\0') /* hack to mark broken clients */
-		strcpy(c->name, broken);
+		strcpy(c->class, broken);
 }
 
 void
