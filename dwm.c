@@ -485,7 +485,6 @@ classtoclient(char *class)
 	Client *c;
 	Monitor *m;
 
-    fprintf(stdout, "c2c name: %s\n", class);
 	for (m = mons; m; m = m->next)
 		for (c = m->clients; c; c = c->next)
 			if (strcmp(class, c->class) == 0)
@@ -1317,13 +1316,12 @@ quit(const Arg *arg)
 void
 raiseorspawn(const Arg *arg)
 {
-    Client *c;
+	Client *c;
 
-    if ((c = classtoclient(((char **)arg->v)[0]))) {
-        fprintf(stderr, "c: %s.\nn: %s.\n", c->class, c->name);
-        focus(c);
-    } else
-        spawn(arg);
+	if ((c = classtoclient(((char **)arg->v)[0]))) {
+		focus(c);
+	} else
+		spawn(arg);
 }
 
 Monitor *
@@ -2095,8 +2093,8 @@ updatetitle(Client *c)
 void
 updatetitleclass(Client *c)
 {
-    if (!gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class))
-        gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class);
+	if (!gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class))
+		gettextprop(c->win, XA_WM_CLASS, c->class, sizeof c->class);
 	if (c->class[0] == '\0') /* hack to mark broken clients */
 		strcpy(c->class, broken);
 }
