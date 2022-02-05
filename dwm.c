@@ -480,14 +480,15 @@ checkotherwm(void)
 }
 
 Client *
-classtoclient(char *name)
+classtoclient(char *class)
 {
 	Client *c;
 	Monitor *m;
 
+    fprintf(stdout, "c2c name: %s\n", class);
 	for (m = mons; m; m = m->next)
 		for (c = m->clients; c; c = c->next)
-			if (strcmp(name, c->name))
+			if (strcmp(class, c->class) == 0)
 				return c;
 	return NULL;
 }
@@ -1319,6 +1320,7 @@ raiseorspawn(const Arg *arg)
     Client *c;
 
     if ((c = classtoclient(((char **)arg->v)[0]))) {
+        fprintf(stderr, "c: %s.\nn: %s.\n", c->class, c->name);
         focus(c);
     } else
         spawn(arg);
