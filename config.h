@@ -66,6 +66,7 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_t,      spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,             XK_t,      raiseorspawn,   {.v = termcmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = webcmd } },
 	{ MODKEY|ShiftMask,             XK_x,      spawn,          {.v = powercmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },

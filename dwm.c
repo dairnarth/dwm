@@ -151,6 +151,7 @@ static void attach(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
+static Client *classtoclient(char *name);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
 static void clientmessage(XEvent *e);
@@ -187,11 +188,11 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
-static Client *nametoclient(char *name);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
+static void raiseorspawn(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
 static void resize(Client *c, int x, int y, int w, int h, int interact);
 static void resizeclient(Client *c, int x, int y, int w, int h);
@@ -476,6 +477,19 @@ checkotherwm(void)
 	XSync(dpy, False);
 	XSetErrorHandler(xerror);
 	XSync(dpy, False);
+}
+
+Client *
+classtoclient(char *name)
+{
+	Client *c;
+	Monitor *m;
+
+	for (m = mons; m; m = m->next)
+		for (c = m->clients; c; c = c->next)
+			if (strcmp(name, c->name))
+				return c;
+	return NULL;
 }
 
 void
@@ -1236,19 +1250,6 @@ movemouse(const Arg *arg)
 }
 
 Client *
-nametoclient(char *name)
-{
-	Client *c;
-	Monitor *m;
-
-	for (m = mons; m; m = m->next)
-		for (c = m->clients; c; c = c->next)
-			if (strcmp(name, c->name))
-				return c;
-	return NULL;
-}
-
-Client *
 nexttiled(Client *c)
 {
 	for (; c && (c->isfloating || !ISVISIBLE(c)); c = c->next);
@@ -1313,12 +1314,14 @@ quit(const Arg *arg)
 }
 
 void
-raiseorwake(const Arg *arg)
+raiseorspawn(const Arg *arg)
 {
-    if (nametoclient(((char **)arg->v)[0]))
-        fprintf(stdout, "%s exists.\n", ((char **)arg->v)[0]);
-    else
-        fprintf(stdout, "%s does not exist.\n", ((char **)arg->v)[0]);
+    Client *c;
+
+    if ((c = classtoclient(((char **)arg->v)[0]))) {
+        focus(c);
+    } else
+        spawn(arg);
 }
 
 Monitor *
