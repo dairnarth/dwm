@@ -53,7 +53,7 @@ static const Layout layouts[] = {
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/bash", "-c", cmd, NULL } }
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -87,15 +87,15 @@ static Key keys[] = {
 	{ MODKEY,           XK_period,                focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask, XK_comma,                 tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask, XK_period,                tagmon,         {.i = +1 } },
-	{ 0,                XF86XK_AudioMute,         spawn,          SHCMD("pamixer -t") },
-	{ 0,                XF86XK_AudioLowerVolume,  spawn,          SHCMD("pamixer -d 5") },
-	{ 0,                XF86XK_AudioRaiseVolume,  spawn,          SHCMD("pamixer -i 5") },
-	{ ShiftMask,        XF86XK_AudioLowerVolume,  spawn,          SHCMD("pamixer -d 1") },
-	{ ShiftMask,        XF86XK_AudioRaiseVolume,  spawn,          SHCMD("pamixer -i 1") },
-	{ 0,                XF86XK_MonBrightnessDown, spawn,          SHCMD("light -U 5") },
-	{ 0,                XF86XK_MonBrightnessUp,   spawn,          SHCMD("light -A 5") },
-	{ ShiftMask,        XF86XK_MonBrightnessDown, spawn,          SHCMD("light -U 1") },
-	{ ShiftMask,        XF86XK_MonBrightnessUp,   spawn,          SHCMD("light -A 1") },
+	{ 0,                XF86XK_AudioMute,         spawn,          SHCMD("volbrtsend -v m") },
+	{ 0,                XF86XK_AudioLowerVolume,  spawn,          SHCMD("volbrtsend -dv 5") },
+	{ 0,                XF86XK_AudioRaiseVolume,  spawn,          SHCMD("volbrtsend -uv 5") },
+	{ ShiftMask,        XF86XK_AudioLowerVolume,  spawn,          SHCMD("volbrtsend -dv 1") },
+	{ ShiftMask,        XF86XK_AudioRaiseVolume,  spawn,          SHCMD("volbrtsend -uv 1") },
+	{ 0,                XF86XK_MonBrightnessDown, spawn,          SHCMD("volbrtsend -db 5") },
+	{ 0,                XF86XK_MonBrightnessUp,   spawn,          SHCMD("volbrtsend -ub 5") },
+	{ ShiftMask,        XF86XK_MonBrightnessDown, spawn,          SHCMD("volbrtsend -db 1") },
+	{ ShiftMask,        XF86XK_MonBrightnessUp,   spawn,          SHCMD("volbrtsend -ub 1") },
 	TAGKEYS(            XK_1,                                     0)
 	TAGKEYS(            XK_2,                                     1)
 	TAGKEYS(            XK_3,                                     2)
