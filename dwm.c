@@ -1327,15 +1327,9 @@ raiseorspawn(const Arg *arg)
             selmon = m;
         } else if (!c || c == selmon->sel)
             return;
-        /* check tags
-         * have a look at followtag and followmon patches
-         * if (m != selmon) {
-         *   unfocus(selmon->sel, 1);
-         *   selmon = m;
-         * } else if (!c || c == selmon->sel)
-         *   return;
-         */
 		focus(c);
+		restack(selmon);
+		XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w/2, c->h/2);
 	} else
 		spawn(arg);
 }
