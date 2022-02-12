@@ -1318,9 +1318,18 @@ void
 raiseorspawn(const Arg *arg)
 {
 	Client *c;
+    Monitor *m;
 
 	if ((c = classtoclient(((char **)arg->v)[0]))) {
+        m = c ? c->mon : wintomon(c->w);
+        if (m != selmon) {
+            unfocus(selmon->sel, 1);
+            selmon = m;
+        } else if (!c || c == selmon->sel)
+            return;
 		focus(c);
+		restack(selmon);
+		XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w/2, c->h/2);
 	} else
 		spawn(arg);
 }
