@@ -60,15 +60,15 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", "-e", "tmux-default", NULL };
 static const char *webcmd[]   = { "qutebrowser", NULL };
-static const char *powercmd[] = { "safe_shutdown", NULL };
 
 static Key keys[] = {
 	/* modifier         key                       function        argument */
 	{ MODKEY,           XK_space,                 spawn,          {.v = dmenucmd } },
 	{ MODKEY,           XK_t,                     raiseorspawn,   {.v = termcmd } },
 	{ MODKEY,           XK_w,                     raiseorspawn,   {.v = webcmd } },
-	{ MODKEY|ShiftMask, XK_x,                     spawn,          {.v = powercmd } },
-	{ MODKEY,           XK_y,                     spawn,          SHCMD("ytweb") },
+	{ MODKEY|ShiftMask, XK_w,                     spawn,          SHCMD("dwm-scripts websearch") },
+	{ MODKEY|ShiftMask, XK_x,                     spawn,          SHCMD("dwm-scripts shutdown") },
+	{ MODKEY,           XK_y,                     spawn,          SHCMD("dwm-scripts youtube") },
 	{ MODKEY,           XK_b,                     togglebar,      {0} },
 	{ MODKEY,           XK_j,                     focusstack,     {.i = +1 } },
 	{ MODKEY,           XK_k,                     focusstack,     {.i = -1 } },
@@ -88,15 +88,15 @@ static Key keys[] = {
 	{ MODKEY,           XK_period,                focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask, XK_comma,                 tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask, XK_period,                tagmon,         {.i = +1 } },
-	{ 0,                XF86XK_AudioMute,         spawn,          SHCMD("volbrtsend -v m") },
-	{ 0,                XF86XK_AudioLowerVolume,  spawn,          SHCMD("volbrtsend -dv 5") },
-	{ 0,                XF86XK_AudioRaiseVolume,  spawn,          SHCMD("volbrtsend -uv 5") },
-	{ ShiftMask,        XF86XK_AudioLowerVolume,  spawn,          SHCMD("volbrtsend -dv 1") },
-	{ ShiftMask,        XF86XK_AudioRaiseVolume,  spawn,          SHCMD("volbrtsend -uv 1") },
-	{ 0,                XF86XK_MonBrightnessDown, spawn,          SHCMD("volbrtsend -db 5") },
-	{ 0,                XF86XK_MonBrightnessUp,   spawn,          SHCMD("volbrtsend -ub 5") },
-	{ ShiftMask,        XF86XK_MonBrightnessDown, spawn,          SHCMD("volbrtsend -db 1") },
-	{ ShiftMask,        XF86XK_MonBrightnessUp,   spawn,          SHCMD("volbrtsend -ub 1") },
+	{ 0,                XF86XK_AudioMute,         spawn,          SHCMD("dwm-scripts volume -t") },
+	{ 0,                XF86XK_AudioLowerVolume,  spawn,          SHCMD("dwm-scripts volume -d 5") },
+	{ 0,                XF86XK_AudioRaiseVolume,  spawn,          SHCMD("dwm-scripts volume -i 5") },
+	{ ShiftMask,        XF86XK_AudioLowerVolume,  spawn,          SHCMD("dwm-scripts volume -d 1") },
+	{ ShiftMask,        XF86XK_AudioRaiseVolume,  spawn,          SHCMD("dwm-scripts volume -i 1") },
+	{ 0,                XF86XK_MonBrightnessDown, spawn,          SHCMD("dwm-scripts brightness -U 5") },
+	{ 0,                XF86XK_MonBrightnessUp,   spawn,          SHCMD("dwm-scripts brightness -A 5") },
+	{ ShiftMask,        XF86XK_MonBrightnessDown, spawn,          SHCMD("dwm-scripts brightness -U 1") },
+	{ ShiftMask,        XF86XK_MonBrightnessUp,   spawn,          SHCMD("dwm-scripts brightness -A 1") },
 	TAGKEYS(            XK_1,                                     0)
 	TAGKEYS(            XK_2,                                     1)
 	TAGKEYS(            XK_3,                                     2)
